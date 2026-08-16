@@ -1,6 +1,6 @@
 # React Mindmap Builder
 
-This repo is a fully featured Mindmap Builder built with Visuallyjs React.
+This repo is a fully featured Mindmap Builder built with Visuallyjs Vue.
 
 For a live demo see https://visuallyjs.com/demonstrations/mindmap
 
