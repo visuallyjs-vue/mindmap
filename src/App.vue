@@ -3,13 +3,12 @@ import { onMounted, ref, markRaw } from "vue"
 
 import './mindmap.css'
 
-import { registerParser, registerExporter, uuid, EVENT_GRAPH_CLEARED, CONNECTOR_TYPE_STRAIGHT, AnchorLocations, EVENT_CANVAS_CLICK, EVENT_UNDO, EVENT_REDO } from "@visuallyjs/browser-ui"
+import { registerParser, registerExporter, uuid, EVENT_GRAPH_CLEARED, CONNECTOR_TYPE_STRAIGHT, AnchorLocations, EVENT_CANVAS_CLICK, EVENT_UNDO, EVENT_REDO, BowtieLayout } from "@visuallyjs/browser-ui"
 import { SurfaceProvider, SurfaceComponent, ControlsComponent, MiniviewComponent } from "@visuallyjs/browser-ui-vue";
-import {SUBTOPIC, MAIN, LEFT, RIGHT} from "./definitions";
+import {MAIN, LEFT, RIGHT} from "./definitions";
 import {MINDMAP_JSON, mindmapJsonExporter, mindmapJsonParser} from "./parser";
 
 import Inspector from "./InspectorComponent.vue"
-import {MindmapLayout} from "./layout";
 
 import MainNode from "./components/MainNode.vue"
 import SubtopicNode from "./components/SubtopicNode.vue"
@@ -24,7 +23,6 @@ registerParser(MINDMAP_JSON, mindmapJsonParser)
 registerExporter(MINDMAP_JSON, mindmapJsonExporter)
 
 onMounted(() => {
-  debugger
     const surfaceInstance = surfaceRef.value.surface
     model.value = surfaceInstance.model
 
@@ -61,14 +59,20 @@ const view = {
 }
 
 const renderOptions = {
-    elementsDraggable:false,
-    zoomToFit:true,
-    logicalPorts:true,
-    refreshLayoutOnEdgeConnect:true,
-    consumeRightClick:false,
-    layout:{
-        type:MindmapLayout.type,
-    },
+  elementsDraggable:false,
+  zoomToFit:true,
+  logicalPorts:true,
+  relayoutOnEdgeConnect:true,
+  consumeRightClick:false,
+  // Use a bowtie layout.
+  layout:{
+    type:BowtieLayout.type,
+    options:{
+      getRootNode:(ds) => ds.getNodes().filter(d => d.data.type === MAIN)[0],
+      getUpstream:(ds, v) => v.getAllEdges().filter(e => e.target.data.direction === LEFT).map(e => e.target),
+      getDownstream:(ds, v) => v.getAllEdges().filter(e => e.target.data.direction === RIGHT).map(e => e.target)
+    }
+  },
     edges:{
         connector:{
             type:CONNECTOR_TYPE_STRAIGHT,
