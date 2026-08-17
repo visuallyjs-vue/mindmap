@@ -2,7 +2,7 @@ import {uuid} from "@visuallyjs/browser-ui";
 import {SUBTOPIC} from "./definitions.js";
 
 export function addChild(model, vertex, direction) {
-    const source = direction != null ? vertex.getPort(direction) : vertex
+    const source = vertex
     const payload = {
         id:uuid(),
         parentId:vertex.id,

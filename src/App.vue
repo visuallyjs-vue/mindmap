@@ -61,7 +61,6 @@ const view = {
 const renderOptions = {
   elementsDraggable:false,
   zoomToFit:true,
-  logicalPorts:true,
   relayoutOnEdgeConnect:true,
   consumeRightClick:false,
   // Use a bowtie layout.
